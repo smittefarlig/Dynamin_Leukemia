@@ -1,0 +1,10 @@
+//Merge
+
+run("Merge Channels...", "c1=red.tif c2=green.tif c4=BF.tif create");
+run("RGB Color");
+//Insert a path manually
+
+run("Save", "save=//.../merged.tif");
+
+close();
+close();

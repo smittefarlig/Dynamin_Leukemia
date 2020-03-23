@@ -1,0 +1,67 @@
+//ImageJ Macro (IJM) script for gaining publication videos from obtained raw data.
+
+//Open
+
+originalName = getTitle();
+rename("open");
+run("8-bit");
+
+//Fluorescence thresholds
+
+run("Split Channels");
+
+rename("red");
+run("Size...", "width=800 height=800 time=144 constrain average interpolation=Bilinear");
+setThreshold(51, 255);
+setOption("BlackBackground", true);
+run("Convert to Mask", "method=MaxEntropy background=Dark black");
+run("Red");
+
+selectWindow("C2-open");
+
+rename("green");
+run("Size...", "width=800 height=800 time=144 constrain average interpolation=Bilinear");
+setThreshold(170, 255);
+run("Convert to Mask", "method=MaxEntropy background=Dark black");
+run("Subtract Background...", "rolling=1 create stack");
+run("Green");
+
+selectWindow("C1-open");
+
+
+//Brightfield adjustments
+
+rename("BF");
+run("Size...", "width=800 height=800 time=144 constrain average interpolation=Bilinear");
+
+// TIB: setMinAndMax(70, 140);
+// CCL: Control 70,130 MitMAB 30, 90
+
+setMinAndMax(30, 90);
+run("Apply LUT", "add stack");
+
+
+//Merge
+
+run("Merge Channels...", "c1=red c2=green c4=BF create");
+
+
+//Labelling
+
+run("RGB Color", "frames keep");
+run("Time Stamper", "starting=0 interval=10 x=-150 y=80 font=80 '00 decimal=2 anti-aliased or=h");
+run("Scale Bar...", "width=50 height=20 font=40 color=White background=None location=[Lower Left] bold label");
+
+//AVI
+
+
+name = replace( originalName , ".tif" , ".avi" );
+rename(name);
+
+run("AVI... ", "compression=JPEG frame=12 save=//" + name);
+
+
+
+close();
+close();
+

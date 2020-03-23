@@ -1,0 +1,70 @@
+//Split channels
+
+run("8-bit");
+run("Split Channels");
+
+//Generate timepoint images
+
+run("Slice Keeper", "first=1 last=1 increment=1");
+rename("red.tif");
+
+//Binarisation
+
+//red
+
+setAutoThreshold("Intermodes dark");
+
+//run("Threshold...");
+
+setThreshold(55, 255);
+run("Convert to Mask");
+run("Red");
+run("RGB Color");
+
+//Insert a path manually
+
+run("Save", "save=//.../red.tif");
+
+//Switch to green
+
+close();
+close();
+
+run("Slice Keeper", "first=1 last=1 increment=1");
+rename("green.tif");
+
+//green
+
+setAutoThreshold("Intermodes dark");
+
+//run("Threshold...");
+
+setThreshold(240, 255);
+run("Convert to Mask");
+run("Green");
+run("RGB Color");
+
+
+//Insert a path manually
+
+run("Save", "save=//.../green.tif");
+
+//Switch to Brightfield
+
+close();
+close();
+
+run("Slice Keeper", "first=1 last=1 increment=1");
+rename("BF8.tif");
+setMinAndMax(70, 140);
+run("Apply LUT"); //70-230 min max
+run("RGB Color");
+
+//Insert a path manually
+
+run("Save", "save=//.../BF0.tif");
+
+//close all
+
+close();
+close();
